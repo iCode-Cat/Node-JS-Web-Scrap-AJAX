@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="scss/style.css">
+</head>
+
+<body>
+    <div class="input-container">
+        <input class="value" type="text" placeholder="team name">
+        <button class="query">SEARCH</button>
+    </div>
+
+    <div class="image-container">
+       <img class="loader" src="loader.svg" alt="">
+    </div>
+
+    <script>
+        const query = document.querySelector(".query");
+
+        query.addEventListener("click", () => {
+
+            
+            const value = document.querySelector(".value").value;
+            const container = document.querySelector(".image-container");
+            const loader = document.querySelector(".loader");
+            loader.style.display="flex";
+            container.style.display='flex';
+            if(document.querySelectorAll(".players")){
+                        const players = document.querySelectorAll(".players")
+                        players.forEach(players => {
+                            players.remove()
+                        });
+                    }
+
+            
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    team: value
+                })
+            }
+            call()
+         async  function call(){
+            fetch("/", options);
+            const players = await fetch("/json")
+                .then(res => res.json())
+                .then((data) =>  {
+                    container.style.display='grid';
+                    data.forEach(player => {
+                    const image = document.createElement("img");
+                    image.setAttribute("class" , "players")
+                    image.src = player;
+                    container.appendChild(image)
+                    loader.style.display="none";
+
+                   
+                })
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+                
+                if(container.childElementCount == 1) {
+                    loader.style.display="none";
+                    alert('No players has been found!')
+                }
+           }
+                    
+                
+                    
+        
+        })
+    </script>
+</body>
+
+</html>
